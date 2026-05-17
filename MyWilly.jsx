@@ -1830,57 +1830,6 @@ ${text}`;
     };
 
     const downloadFundPDF = (targetFund) => {
-      const susc = (SUSCRIPCIONES[targetFund.id]||[]);
-      const extras = (extraC[targetFund.id]||[]);
-      const allRows = [...susc, ...extras.map(e=>({date:e.date,partic:e.partic||0,nav:e.aportacion&&e.partic?(e.aportacion/e.partic):0,inv:e.aportacion||0,mkt:e.aportacion||0}))].sort((a,b)=>a.date.localeCompare(b.date));
-      const latente = targetFund.valAct - targetFund.totalInv;
-      const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
-        <title>MyWilly — ${targetFund.shortName} Fiscal ${year}</title>
-        <style>
-          body{font-family:Arial,sans-serif;color:#1a1a2e;padding:30px;max-width:900px;margin:0 auto;font-size:13px}
-          h1{color:#1C2640;border-bottom:3px solid #72DFA8;padding-bottom:10px}
-          h2{color:#1C2640;margin-top:28px;font-size:15px}
-          table{width:100%;border-collapse:collapse;margin-top:10px}
-          th{background:#1C2640;color:white;padding:8px 10px;text-align:left;font-size:12px}
-          td{padding:7px 10px;border-bottom:1px solid #e0e0e0;font-size:12px}
-          tr:nth-child(even){background:#f8f9ff}
-          .box{background:#f0f4ff;border-left:4px solid #72DFA8;padding:12px 16px;margin:16px 0;border-radius:4px}
-          .total{font-weight:bold;background:#e8f5e9}
-          @media print{body{padding:15px}button{display:none}}
-          @page{margin:1.5cm}
-        </style></head><body>
-        <h1>📊 ${targetFund.name}</h1>
-        <p>ISIN: ${targetFund.isin} · Generado el ${new Date().toLocaleDateString("es-ES",{day:"numeric",month:"long",year:"numeric"})}</p>
-        <h2>Resumen</h2>
-        <div class="box">
-          <strong>Invertido:</strong> ${(targetFund.totalInv||0).toFixed(2)}€ &nbsp;|&nbsp;
-          <strong>Valor actual:</strong> ${(targetFund.valAct||0).toFixed(2)}€ &nbsp;|&nbsp;
-          <strong>Plusvalía latente:</strong> <span style="color:${latente>=0?"#2e7d32":"#c62828"}">${latente>=0?"+":""}${latente.toFixed(2)}€ (${targetFund.rendPct}%)</span>
-        </div>
-        <h2>Aportaciones (orden FIFO)</h2>
-        <table>
-          <thead><tr><th>Fecha</th><th>Participaciones</th><th>NAV compra</th><th>Invertido</th><th>Valor mkt</th><th>Resultado</th></tr></thead>
-          <tbody>${allRows.map((s,i)=>`<tr>
-            <td>${s.date}</td>
-            <td>${(s.partic||0).toFixed?.(4)||s.partic}</td>
-            <td>${(s.nav||0).toFixed?.(4)||"—"}€</td>
-            <td>${(s.inv||s.aportacion||0).toFixed(2)}€</td>
-            <td>${(s.mkt||s.aportacion||0).toFixed(2)}€</td>
-            <td style="color:${((s.mkt||0)-(s.inv||s.aportacion||0))>=0?"#2e7d32":"#c62828"}">${((s.mkt||0)-(s.inv||s.aportacion||0))>=0?"+":""}${((s.mkt||0)-(s.inv||s.aportacion||0)).toFixed(2)}€</td>
-          </tr>`).join("")}
-          <tr class="total"><td colspan="3"><strong>TOTAL</strong></td>
-            <td><strong>${(targetFund.totalInv||0).toFixed(2)}€</strong></td>
-            <td><strong>${(targetFund.valAct||0).toFixed(2)}€</strong></td>
-            <td style="color:${latente>=0?"#2e7d32":"#c62828"}"><strong>${latente>=0?"+":""}${latente.toFixed(2)}€</strong></td>
-          </tr></tbody>
-        </table>
-        <script>window.onload=()=>window.print();</script>
-        </body></html>`;
-      const w = window.open("","_blank");
-      if(w){ w.document.write(html); w.document.close(); }
-    };
-
-    const downloadFundPDF = (targetFund) => {
       const susc   = (SUSCRIPCIONES[targetFund.id]||[]);
       const extras = (extraC[targetFund.id]||[]);
       const allRows = [...susc, ...extras.map(e=>({
